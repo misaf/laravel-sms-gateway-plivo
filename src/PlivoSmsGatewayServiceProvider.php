@@ -20,11 +20,11 @@ final class PlivoSmsGatewayServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->app->afterResolving(SmsGatewayManager::class, function (SmsGatewayManager $manager, Application $app): void {
-            $manager->extend('plivo', fn (): PlivoDriver => $app->make(PlivoDriver::class));
+            $manager->extend('plivo', fn(): PlivoDriver => $app->make(PlivoDriver::class));
         });
 
         if ($this->app->bound('sms-gateway')) {
-            $this->app->make('sms-gateway')->extend('plivo', fn (): PlivoDriver => $this->app->make(PlivoDriver::class));
+            $this->app->make('sms-gateway')->extend('plivo', fn(): PlivoDriver => $this->app->make(PlivoDriver::class));
         }
     }
 }
