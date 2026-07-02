@@ -1,13 +1,18 @@
 {
     "name": "misaf/laravel-sms-gateway-plivo",
-    "description": "Plivo driver for misaf/laravel-sms-gateway.",
+    "description": "Plivo SMS gateway driver for Laravel.",
     "type": "library",
     "license": "MIT",
     "keywords": [
         "laravel",
+        "laravel-package",
         "sms",
+        "sms-api",
         "sms-gateway",
-        "plivo"
+        "sms-provider",
+        "sms-driver",
+        "plivo",
+        "plivo-sms"
     ],
     "homepage": "https://github.com/misaf/laravel-sms-gateway-plivo",
     "support": {

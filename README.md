@@ -1,29 +1,48 @@
 # Laravel SMS Gateway Plivo Driver
 
-Plivo driver package for [`misaf/laravel-sms-gateway`](https://github.com/misaf/laravel-sms-gateway).
+Plivo SMS gateway driver for [`misaf/laravel-sms-gateway`](https://github.com/misaf/laravel-sms-gateway).
 
 ## Installation
 
 ```bash
-composer require misaf/laravel-sms-gateway misaf/laravel-sms-gateway-plivo
+composer require misaf/laravel-sms-gateway-plivo
 ```
 
-Laravel package discovery registers `Misaf\LaravelSmsGatewayPlivo\PlivoSmsGatewayServiceProvider` automatically.
+Laravel package discovery registers the driver service provider automatically.
 
-## Usage
-
-Set the default driver when this provider should be used by default:
+## Configuration
 
 ```env
 SMS_GATEWAY_DRIVER=plivo
+SMS_GATEWAY_PLIVO_AUTH_ID=your-auth-id
+SMS_GATEWAY_PLIVO_AUTH_TOKEN=your-auth-token
 ```
 
-Then configure the provider credentials in `config/services.php` and use the shared facade:
+```php
+// config/services.php
+'plivo' => [
+    'auth_id'    => env('SMS_GATEWAY_PLIVO_AUTH_ID'),
+    'auth_token' => env('SMS_GATEWAY_PLIVO_AUTH_TOKEN'),
+],
+```
+
+## Usage
 
 ```php
 use Misaf\LaravelSmsGateway\Facade\SmsGateway;
 
-SmsGateway::driver('plivo')->request();
+$response = SmsGateway::driver('plivo')->send([
+    'dst'  => '09123456789',
+    'text' => 'Hello',
+]);
+```
+
+The payload is passed directly to Plivo, so use the fields expected by the Plivo API.
+
+Use `request()` when you need direct access to Laravel's HTTP client:
+
+```php
+$request = SmsGateway::driver('plivo')->request();
 ```
 
 ## Testing
