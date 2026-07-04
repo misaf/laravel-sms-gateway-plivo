@@ -23,8 +23,21 @@ SMS_GATEWAY_PLIVO_AUTH_TOKEN=your-auth-token
 'plivo' => [
     'auth_id'    => env('SMS_GATEWAY_PLIVO_AUTH_ID'),
     'auth_token' => env('SMS_GATEWAY_PLIVO_AUTH_TOKEN'),
+    'base_url' => env('SMS_GATEWAY_PLIVO_BASE_URL'),
 ],
 ```
+
+By default, the auth ID is included in the base URL path. If you override `base_url`, include the account-specific path segment expected by Plivo.
+
+## Driver Behavior
+
+| Option | Value |
+| --- | --- |
+| Driver name | `plivo` |
+| Default base URL | `https://api.plivo.com/v1/Account/{auth_id}/` |
+| `send()` endpoint | `POST Message/` |
+| Authentication | HTTP Basic auth from `services.plivo.auth_id` and `services.plivo.auth_token` |
+| Payload | JSON data sent directly to Plivo |
 
 ## Usage
 
@@ -32,8 +45,9 @@ SMS_GATEWAY_PLIVO_AUTH_TOKEN=your-auth-token
 use Misaf\LaravelSmsGateway\Facade\SmsGateway;
 
 $response = SmsGateway::driver('plivo')->send([
-    'dst'  => '09123456789',
-    'text' => 'Hello',
+    'src'  => '14151234567',
+    'dst'  => '14157654321',
+    'text' => 'Hello from Plivo',
 ]);
 ```
 
