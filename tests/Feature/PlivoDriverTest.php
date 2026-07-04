@@ -17,13 +17,11 @@ test('can send SMS via Plivo driver', function (): void {
         'https://api.plivo.com/v1/Account/MA123/Message/' => Http::response($response, 202),
     ]);
 
-    $result = SmsGateway::driver()->request()
-        ->post('Message/', [
-            'src'  => '14151234567',
-            'dst'  => '14157654321',
-            'text' => 'Hello from Plivo',
-        ])
-        ->json();
+    $result = SmsGateway::driver()->send([
+        'src'  => '14151234567',
+        'dst'  => '14157654321',
+        'text' => 'Hello from Plivo',
+    ])->json();
 
     Http::assertSent(function (Request $request): bool {
         return 'https://api.plivo.com/v1/Account/MA123/Message/' === $request->url()
@@ -35,4 +33,21 @@ test('can send SMS via Plivo driver', function (): void {
     });
 
     expect($result)->toEqual($response);
+});
+
+test('prefers the base URL configured in services over the driver default', function (): void {
+    config()->set('sms_gateway.default', 'plivo');
+    config()->set('services.plivo.base_url', 'https://services-override.example.test/v1/Account/MA123/');
+
+    Http::fake([
+        'https://services-override.example.test/*' => Http::response(['api_id' => 'api-id'], 202),
+    ]);
+
+    SmsGateway::driver()->send([
+        'text' => 'Hello',
+    ]);
+
+    Http::assertSent(function (Request $request): bool {
+        return 'https://services-override.example.test/v1/Account/MA123/Message/' === $request->url();
+    });
 });

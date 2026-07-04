@@ -5,25 +5,28 @@ declare(strict_types=1);
 namespace Misaf\LaravelSmsGatewayPlivo\Drivers;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Misaf\LaravelSmsGateway\SmsGatewayDriver;
 
 final class PlivoDriver extends SmsGatewayDriver
 {
-    protected function driverName(): string
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function send(array $data): Response
     {
-        return 'plivo';
+        return $this->request()->post('Message/', $data);
     }
 
-    protected function defaultGateway(): string
+    protected function defaultBaseUrl(): string
     {
-        return "https://api.plivo.com/v1/Account/{$this->serviceConfigString('auth_id')}/";
+        return "https://api.plivo.com/v1/Account/{$this->driverConfig('auth_id')}/";
     }
 
     protected function configureRequest(PendingRequest $request): PendingRequest
     {
         return $request
-            ->withBasicAuth($this->serviceConfigString('auth_id'), $this->serviceConfigString('auth_token'))
-            ->acceptJson()
-            ->asJson();
+            ->withBasicAuth($this->driverConfig('auth_id'), $this->driverConfig('auth_token'))
+            ->acceptJson();
     }
 }
